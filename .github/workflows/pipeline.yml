@@ -77,7 +77,7 @@ jobs:
             -d "$(jq -n \
               --arg username "CI/CD Github Bot" \
               --arg title "🎉 New version ${{ needs.tag_release.outputs.tag }} deployed successfully!" \
-              --arg description "**Commit**: \`${{ github.sha }}\`\n**Time**: $TIME" \
+              --arg description "**Commit**: \`${{ github.sha }}\`\n**Time**: ${TIME//$'\n'/ }" \
               --argjson color 65280 \
               '{
                 username: $username,
@@ -101,7 +101,7 @@ jobs:
             -d "$(jq -n \
               --arg username "CI/CD Github Bot" \
               --arg title "❌ Build failed" \
-              --arg description "**Commit**: \`${{ github.sha }}\`\n**Time**: $TIME" \
+              --arg description "**Commit**: \`${{ github.sha }}\`\n**Time**: ${TIME//$'\n'/ }" \
               --argjson color 16711680 \
               '{
                 username: $username,
