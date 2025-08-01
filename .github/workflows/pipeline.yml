@@ -72,8 +72,9 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          SANITIZED_TIME="${TIME//$'\n'/ }"
-          DESCRIPTION="**Commit**: \`${{ github.sha }}\`\n**Time**: $SANITIZED_TIME"
+          COMMIT_HASH="${{ github.sha }}"
+          DESCRIPTION="**Commit**: \`${COMMIT_HASH}\`
+            **Time**: ${TIME}"
           curl -H "Content-Type: application/json" \
             -X POST \
             -d "$(jq -n \
@@ -98,8 +99,9 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          SANITIZED_TIME="${TIME//$'\n'/ }"
-          DESCRIPTION="**Commit**: \`${{ github.sha }}\`\n**Time**: $SANITIZED_TIME"
+          COMMIT_HASH="${{ github.sha }}"
+          DESCRIPTION="**Commit**: \`${COMMIT_HASH}\`
+            **Time**: ${TIME}"
           curl -H "Content-Type: application/json" \
             -X POST \
             -d "$(jq -n \
