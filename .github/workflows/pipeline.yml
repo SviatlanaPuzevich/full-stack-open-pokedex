@@ -68,57 +68,22 @@ jobs:
     steps:
       - name: Send successes message in discord
         if: ${{ success() }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        run: |
-          TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          COMMIT_HASH="${{ github.sha }}"
-          DESCRIPTION="**Commit**: \`${COMMIT_HASH}\`
-          **Time**: ${TIME}"
-          curl -H "Content-Type: application/json" \
-            -X POST \
-            -d "$(jq -n \
-              --arg username "CI/CD Github Bot" \
-              --arg title "🎉 New version ${{ needs.tag_release.outputs.tag }} deployed successfully!" \
-              --arg description "$DESCRIPTION" \
-              --argjson color 65280 \
-              '{
-                username: $username,
-                embeds: [
-                  {
-                    title: $title,
-                    description: $description,
-                    color: $color
-                  }
-                ]
-              }')" \
-            "$DISCORD_WEBHOOK"
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: CI/CD Github Bot
+          text:  New version ${{ needs.tag_release.outputs.tag }} deployed successfully!
+          severity: info
+          color: '#00FF00'
+          title: 🎉 Build Succeeded!
       - name: Send failure message in discord
         if: ${{ failure() }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        run: |
-          TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          COMMIT_HASH="${{ github.sha }}"
-          DESCRIPTION="**Commit**: \`${COMMIT_HASH}\`
-          **Time**: ${TIME}"
-          curl -H "Content-Type: application/json" \
-            -X POST \
-            -d "$(jq -n \
-              --arg username "CI/CD Github Bot" \
-              --arg title "❌ Build failed" \
-              --arg description "$DESCRIPTION" \
-              --argjson color 16711680 \
-              '{
-                username: $username,
-                embeds: [
-                  {
-                    title: $title,
-                    description: $description,
-                    color: $color
-                  }
-                ]
-              }')" \
-            "$DISCORD_WEBHOOK"
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: CI/CD Github Bot
+          text: The build was failed!
+          severity: error
+          title: Build Failed!
 
 
