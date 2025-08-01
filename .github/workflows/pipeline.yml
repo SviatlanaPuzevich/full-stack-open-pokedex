@@ -72,12 +72,14 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          SANITIZED_TIME="${TIME//$'\n'/ }"
+          DESCRIPTION="**Commit**: \`${{ github.sha }}\`\n**Time**: $SANITIZED_TIME"
           curl -H "Content-Type: application/json" \
             -X POST \
             -d "$(jq -n \
               --arg username "CI/CD Github Bot" \
               --arg title "🎉 New version ${{ needs.tag_release.outputs.tag }} deployed successfully!" \
-              --arg description "**Commit**: \`${{ github.sha }}\`\n**Time**: ${TIME//$'\n'/ }" \
+              --arg description "$DESCRIPTION" \
               --argjson color 65280 \
               '{
                 username: $username,
@@ -96,12 +98,14 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          SANITIZED_TIME="${TIME//$'\n'/ }"
+          DESCRIPTION="**Commit**: \`${{ github.sha }}\`\n**Time**: $SANITIZED_TIME"
           curl -H "Content-Type: application/json" \
             -X POST \
             -d "$(jq -n \
               --arg username "CI/CD Github Bot" \
               --arg title "❌ Build failed" \
-              --arg description "**Commit**: \`${{ github.sha }}\`\n**Time**: ${TIME//$'\n'/ }" \
+              --arg description "$DESCRIPTION" \
               --argjson color 16711680 \
               '{
                 username: $username,
