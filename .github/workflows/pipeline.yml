@@ -71,9 +71,9 @@ jobs:
         uses: rjstone/discord-webhook-notify@v2.2.1
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: pokedex
+          username: build bot part 11
           text: 🎉 New version ${{ needs.tag_release.outputs.tag }} deployed successfully!
-          severity: info # only to make sure the embed is added
+          severity: info
           color: '#00FF00'
           title: Build Succeeded!
       - name: Send failure message in discord
@@ -81,7 +81,7 @@ jobs:
         uses: rjstone/discord-webhook-notify@v2.2.1
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: guzick.
+          username: part11 bot
           text: The build was failed!
           severity: error
           title: Build Failed!
