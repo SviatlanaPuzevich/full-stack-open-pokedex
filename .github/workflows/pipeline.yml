@@ -68,7 +68,7 @@ jobs:
     steps:
       - name: Send successes message in discord
         if: ${{ success() }}
-        uses: rjstone/discord-webhook-notify@v2.2.1
+        uses: rjstone/discord-webhook-notify@v2.0.1
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           username: build bot part 11
