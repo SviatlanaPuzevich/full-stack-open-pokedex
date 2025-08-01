@@ -68,22 +68,41 @@ jobs:
     steps:
       - name: Send successes message in discord
         if: ${{ success() }}
-        uses: rjstone/discord-webhook-notify@v2.0.1
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: build bot part 11
-          text: 🎉 New version ${{ needs.tag_release.outputs.tag }} deployed successfully!
-          severity: info
-          color: '#00FF00'
-          title: Build Succeeded!
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{
+              \"username\": \"CI/CD Github Bot\",
+              \"embeds\": [
+                {
+                  \"title\": \`🎉 New version ${{ needs.tag_release.outputs.tag }} deployed successfully!\`,
+                  \"description\": \n**Commit**: \`${{ github.sha }}\`\n**Severity Informatinal**: $TIME\",
+                  \"color\": 65280
+                }
+              ]
+            }" \
+            "$DISCORD_WEBHOOK"
       - name: Send failure message in discord
         if: ${{ failure() }}
-        uses: rjstone/discord-webhook-notify@v2.2.1
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: part11 bot
-          text: The build was failed!
-          severity: error
-          title: Build Failed!
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{
+              \"username\": \"CI/CD Github Bot\",
+              \"embeds\": [
+                {
+                  \"title\": \`Build was failed\`,
+                  \"description\": \n**Commit**: \`${{ github.sha }}\`\n**Error**: $TIME\",
+                  \"color\": 16711680
+                }
+              ]
+            }" \
+            "$DISCORD_WEBHOOK"
 
 
