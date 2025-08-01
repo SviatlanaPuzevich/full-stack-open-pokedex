@@ -38,6 +38,8 @@ jobs:
   tag_release:
     if: ${{ github.event_name == 'push' }}
     needs: [ simple_deployment_pipeline ]
+    outputs:
+      tag: ${{ steps.get_tag.outputs.tag }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout full history
@@ -49,10 +51,39 @@ jobs:
           MESSAGES="${{ join(github.event.commits.*.message, ' ') }}"
           CLEANED_MESSAGES="${MESSAGES//$'\n'/ }"
           echo "commit_messages=$CLEANED_MESSAGES" >> $GITHUB_ENV
-
       - name: Bump version and push tag
         if: ${{ !contains(env.commit_messages, '#skip') }}
         uses: anothrNick/github-tag-action@1.73.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+      - name: Extract tag
+        id: get_tag
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+  discord_notification:
+    runs-on: ubuntu-latest
+    needs: [ simple_deployment_pipeline, tag_release ]
+    steps:
+      - name: Send successes message in discord
+        if: ${{ success() }}
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: pokedex
+          text: 🎉 New version ${{ needs.tag_release.outputs.tag }} deployed successfully!
+          severity: info # only to make sure the embed is added
+          color: '#00FF00'
+          title: Build Succeeded!
+      - name: Send failure message in discord
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: guzick.
+          text: The build was failed!
+          severity: error
+          title: Build Failed!
+
+
