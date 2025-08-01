@@ -71,10 +71,8 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
           COMMIT_HASH="${{ github.sha }}"
           DESCRIPTION="**Commit**: \`${COMMIT_HASH}\`
-          **Time**: ${TIME}"
           curl -H "Content-Type: application/json" \
             -X POST \
             -d "$(jq -n \
@@ -98,10 +96,8 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
           COMMIT_HASH="${{ github.sha }}"
           DESCRIPTION="**Commit**: \`${COMMIT_HASH}\`
-          **Time**: ${TIME}"
           curl -H "Content-Type: application/json" \
             -X POST \
             -d "$(jq -n \
