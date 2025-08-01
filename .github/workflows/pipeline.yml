@@ -74,16 +74,21 @@ jobs:
           TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
           curl -H "Content-Type: application/json" \
             -X POST \
-            -d "{
-              \"username\": \"CI/CD Github Bot\",
-              \"embeds\": [
-                {
-                  \"title\": \`🎉 New version ${{ needs.tag_release.outputs.tag }} deployed successfully!\`,
-                  \"description\": \n**Commit**: \`${{ github.sha }}\`\n**Severity Informatinal**: $TIME\",
-                  \"color\": 65280
-                }
-              ]
-            }" \
+            -d "$(jq -n \
+              --arg username "CI/CD Github Bot" \
+              --arg title "🎉 New version ${{ needs.tag_release.outputs.tag }} deployed successfully!" \
+              --arg description "**Commit**: \`${{ github.sha }}\`\n**Time**: $TIME" \
+              --argjson color 65280 \
+              '{
+                username: $username,
+                embeds: [
+                  {
+                    title: $title,
+                    description: $description,
+                    color: $color
+                  }
+                ]
+              }')" \
             "$DISCORD_WEBHOOK"
       - name: Send failure message in discord
         if: ${{ failure() }}
@@ -93,16 +98,21 @@ jobs:
           TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
           curl -H "Content-Type: application/json" \
             -X POST \
-            -d "{
-              \"username\": \"CI/CD Github Bot\",
-              \"embeds\": [
-                {
-                  \"title\": \`Build was failed\`,
-                  \"description\": \n**Commit**: \`${{ github.sha }}\`\n**Error**: $TIME\",
-                  \"color\": 16711680
-                }
-              ]
-            }" \
+            -d "$(jq -n \
+              --arg username "CI/CD Github Bot" \
+              --arg title "❌ Build failed" \
+              --arg description "**Commit**: \`${{ github.sha }}\`\n**Time**: $TIME" \
+              --argjson color 16711680 \
+              '{
+                username: $username,
+                embeds: [
+                  {
+                    title: $title,
+                    description: $description,
+                    color: $color
+                  }
+                ]
+              }')" \
             "$DISCORD_WEBHOOK"
 
 
