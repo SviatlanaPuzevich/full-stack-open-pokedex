@@ -2,7 +2,8 @@ name: health check
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 22 * * *"
+  workflow_dispatch:
 
 jobs:
   health_check:
@@ -14,9 +15,3 @@ jobs:
           url: https://full-stack-open-pokedex-wild-flower-3519.fly.dev/health
           max-attempts: 2
           retry-delay: 5s
-#      - name: Check fail the deployed service URL
-#        uses: jtalk/url-health-check-action@v4
-#        with:
-#          url: https://full-stack-open-pokedex-wild-flower-3519.fly.dev/dead
-#          max-attempts: 2
-#          retry-delay: 5s
