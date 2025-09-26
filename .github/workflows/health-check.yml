@@ -1,0 +1,25 @@
+name: health check
+
+on:
+  push:
+    branches:
+      - main
+#  schedule:
+#    - cron: "0 * * * *"
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://full-stack-open-pokedex-wild-flower-3519.fly.dev/health
+          max-attempts: 2
+          retry-delay: 5s
+      - name: Check fail the deployed service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://full-stack-open-pokedex-wild-flower-3519.fly.dev/dead
+          max-attempts: 2
+          retry-delay: 5s
